@@ -102,4 +102,14 @@ public interface AnuncioFonteOrBuilder extends
    * <code>.estufa.EstadoFonte estado_inicial = 7;</code>
    */
   br.ufc.estufa.proto.EstadoFonteOrBuilder getEstadoInicialOrBuilder();
+
+  /**
+   * <pre>
+   * true = resposta a uma RequisicaoDescoberta; false = anuncio espontaneo
+   * </pre>
+   *
+   * <code>bool em_resposta = 8;</code>
+   * @return The emResposta.
+   */
+  boolean getEmResposta();
 }

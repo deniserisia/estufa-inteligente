@@ -85,11 +85,11 @@ class FonteBase:
 
     # ------------------------------------------------------------ descoberta
 
-    def anuncio(self) -> pb.AnuncioFonte:
+    def anuncio(self, em_resposta: bool = False) -> pb.AnuncioFonte:
         return pb.AnuncioFonte(
             fonte_id=self.id, tipo=self.TIPO, estufa_id=self.estufa, ip=self.ip,
             porta_grpc=self.porta_grpc, controlavel=self.CONTROLAVEL,
-            estado_inicial=self.estado(),
+            estado_inicial=self.estado(), em_resposta=em_resposta,
         )
 
     def _anunciar_no_grupo(self) -> None:
@@ -101,11 +101,18 @@ class FonteBase:
         # Mesmo em falha simulada a fonte responde à descoberta (com em_falha=true no
         # estado): assim um Gateway reiniciado ainda a conhece e pode encerrar a falha.
         # O que a falha corta são as leituras, por isso o Gateway a marca offline.
+        #
+        # A resposta (tipo, IP, porta gRPC e estado inicial) vai pelo grupo multicast,
+        # como pede o requisito 2b, e também direto ao Gateway por UDP, por robustez:
+        # se o multicast falhar na volta, a fonte ainda é registrada. O Gateway ignora
+        # a duplicata.
         with self.trava:
             gw = self.gateway
         if gw is None:
             return
-        rede.enviar_udp(self._udp, pb.MensagemFonte(anuncio=self.anuncio()).SerializeToString(), gw)
+        anuncio = self.anuncio(em_resposta=True)
+        rede.enviar_multicast(self._mc_tx, pb.MensagemMulticast(anuncio=anuncio))
+        rede.enviar_udp(self._udp, pb.MensagemFonte(anuncio=anuncio).SerializeToString(), gw)
 
     def _escutar_multicast(self) -> None:
         rx = rede.socket_multicast_receptor(timeout=1.0)

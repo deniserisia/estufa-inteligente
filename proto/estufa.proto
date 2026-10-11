@@ -50,6 +50,7 @@ message AnuncioFonte {
   int32 porta_grpc = 5;          // 0 quando nao controlavel
   bool controlavel = 6;
   EstadoFonte estado_inicial = 7;
+  bool em_resposta = 8;          // true = resposta a uma RequisicaoDescoberta; false = anuncio espontaneo
 }
 
 message MensagemMulticast {

@@ -135,76 +135,76 @@ public final class Estufa {
       "(\010\";\n\007Medicao\022\020\n\010grandeza\030\001 \001(\t\022\r\n\005valor" +
       "\030\002 \001(\001\022\017\n\007unidade\030\003 \001(\t\"E\n\024RequisicaoDes" +
       "coberta\022\022\n\ngateway_ip\030\001 \001(\t\022\031\n\021gateway_p" +
-      "orta_udp\030\002 \001(\005\"\266\001\n\014AnuncioFonte\022\020\n\010fonte" +
+      "orta_udp\030\002 \001(\005\"\313\001\n\014AnuncioFonte\022\020\n\010fonte" +
       "_id\030\001 \001(\t\022\037\n\004tipo\030\002 \001(\0162\021.estufa.TipoFon" +
       "te\022\021\n\testufa_id\030\003 \001(\t\022\n\n\002ip\030\004 \001(\t\022\022\n\npor" +
       "ta_grpc\030\005 \001(\005\022\023\n\013controlavel\030\006 \001(\010\022+\n\016es" +
-      "tado_inicial\030\007 \001(\0132\023.estufa.EstadoFonte\"" +
-      "|\n\021MensagemMulticast\0222\n\nrequisicao\030\001 \001(\013" +
-      "2\034.estufa.RequisicaoDescobertaH\000\022\'\n\007anun" +
-      "cio\030\002 \001(\0132\024.estufa.AnuncioFonteH\000B\n\n\010con" +
-      "teudo\"\324\001\n\007Leitura\022\020\n\010fonte_id\030\001 \001(\t\022\037\n\004t" +
-      "ipo\030\002 \001(\0162\021.estufa.TipoFonte\022\021\n\testufa_i" +
-      "d\030\003 \001(\t\022\024\n\014timestamp_ms\030\004 \001(\003\022!\n\010medicoe" +
-      "s\030\005 \003(\0132\017.estufa.Medicao\022\016\n\006alerta\030\006 \001(\010" +
-      "\022\025\n\rmotivo_alerta\030\007 \001(\t\022#\n\006estado\030\010 \001(\0132" +
-      "\023.estufa.EstadoFonte\"h\n\rMensagemFonte\022\'\n" +
-      "\007anuncio\030\001 \001(\0132\024.estufa.AnuncioFonteH\000\022\"" +
-      "\n\007leitura\030\002 \001(\0132\017.estufa.LeituraH\000B\n\n\010co" +
-      "nteudo\"\035\n\014ComandoNivel\022\r\n\005nivel\030\001 \001(\001\"$\n" +
-      "\020ComandoIntervalo\022\020\n\010segundos\030\001 \001(\001\"\036\n\014C" +
-      "omandoFalha\022\016\n\006ativar\030\001 \001(\010\"T\n\016ComandoCl" +
-      "iente\022\020\n\010fonte_id\030\001 \001(\t\022!\n\004tipo\030\002 \001(\0162\023." +
-      "estufa.TipoComando\022\r\n\005valor\030\003 \001(\001\"k\n\020Con" +
-      "sultaAgregada\022\"\n\004tipo\030\001 \001(\0162\024.estufa.Tip" +
-      "oConsulta\022\020\n\010janela_s\030\002 \001(\003\022\021\n\testufa_id" +
-      "\030\003 \001(\t\022\016\n\006limite\030\004 \001(\001\"n\n\021ResultadoAgreg" +
-      "ado\022\021\n\testufa_id\030\001 \001(\t\022\r\n\005valor\030\002 \001(\001\022\017\n" +
-      "\007unidade\030\003 \001(\t\022\024\n\014timestamp_ms\030\004 \001(\003\022\020\n\010" +
-      "amostras\030\005 \001(\003\"}\n\021ConsultaHistorico\022\021\n\te" +
-      "stufa_id\030\001 \001(\t\022\020\n\010grandeza\030\002 \001(\t\022\020\n\010font" +
-      "e_id\030\003 \001(\t\022\r\n\005de_ms\030\004 \001(\003\022\016\n\006ate_ms\030\005 \001(" +
-      "\003\022\022\n\nmax_pontos\030\006 \001(\005\"S\n\nPontoSerie\022\024\n\014t" +
-      "imestamp_ms\030\001 \001(\003\022\r\n\005valor\030\002 \001(\001\022\020\n\010font" +
-      "e_id\030\003 \001(\t\022\016\n\006alerta\030\004 \001(\010\"\252\001\n\tInfoFonte" +
-      "\022\"\n\004info\030\001 \001(\0132\024.estufa.AnuncioFonte\022#\n\006" +
-      "estado\030\002 \001(\0132\023.estufa.EstadoFonte\022\016\n\006onl" +
-      "ine\030\003 \001(\010\022\031\n\021ultimo_contato_ms\030\004 \001(\003\022)\n\020" +
-      "ultimas_medicoes\030\005 \003(\0132\017.estufa.Medicao\"" +
-      "\212\002\n\021RequisicaoCliente\022\022\n\nrequest_id\030\001 \001(" +
-      "\t\022&\n\rlistar_fontes\030\002 \001(\0132\r.estufa.VazioH" +
-      "\000\022)\n\007comando\030\003 \001(\0132\026.estufa.ComandoClien" +
-      "teH\000\022,\n\010consulta\030\004 \001(\0132\030.estufa.Consulta" +
-      "AgregadaH\000\022.\n\thistorico\030\005 \001(\0132\031.estufa.C" +
-      "onsultaHistoricoH\000\022\'\n\016listar_alertas\030\006 \001" +
-      "(\0132\r.estufa.VazioH\000B\007\n\005corpo\"\213\002\n\017Respost" +
-      "aGateway\022\022\n\nrequest_id\030\001 \001(\t\022\017\n\007sucesso\030" +
-      "\002 \001(\010\022\014\n\004erro\030\003 \001(\t\022!\n\006fontes\030\004 \003(\0132\021.es" +
-      "tufa.InfoFonte\022.\n\021estado_atualizado\030\005 \001(" +
-      "\0132\023.estufa.EstadoFonte\022-\n\nresultados\030\006 \003" +
-      "(\0132\031.estufa.ResultadoAgregado\022!\n\005serie\030\007" +
-      " \003(\0132\022.estufa.PontoSerie\022 \n\007alertas\030\010 \003(" +
-      "\0132\017.estufa.Leitura*\232\001\n\tTipoFonte\022\025\n\021TIPO" +
-      "_DESCONHECIDO\020\000\022\014\n\010EXAUSTOR\020\001\022\017\n\013NEBULIZ" +
-      "ADOR\020\002\022\025\n\021TELA_SOMBREAMENTO\020\003\022\027\n\023SENSOR_" +
-      "TEMP_UMIDADE\020\004\022\027\n\023SENSOR_LUMINOSIDADE\020\005\022" +
-      "\016\n\nSENSOR_CO2\020\006*\215\001\n\013TipoComando\022\024\n\020CMD_D" +
-      "ESCONHECIDO\020\000\022\t\n\005LIGAR\020\001\022\014\n\010DESLIGAR\020\002\022\021" +
-      "\n\rAJUSTAR_NIVEL\020\003\022\025\n\021AJUSTAR_INTERVALO\020\004" +
-      "\022\021\n\rSIMULAR_FALHA\020\005\022\022\n\016ENCERRAR_FALHA\020\006*" +
-      "u\n\014TipoConsulta\022\031\n\025CONSULTA_DESCONHECIDA" +
-      "\020\000\022\025\n\021TEMPO_ACIMA_IDEAL\020\001\022\034\n\030MEDIA_UMIDA" +
-      "DE_POR_ESTUFA\020\002\022\025\n\021PICO_LUMINOSIDADE\020\0032\331" +
-      "\002\n\016AtuadorService\0221\n\013ObterEstado\022\r.estuf" +
-      "a.Vazio\032\023.estufa.EstadoFonte\022+\n\005Ligar\022\r." +
-      "estufa.Vazio\032\023.estufa.EstadoFonte\022.\n\010Des" +
-      "ligar\022\r.estufa.Vazio\032\023.estufa.EstadoFont" +
-      "e\0229\n\014AjustarNivel\022\024.estufa.ComandoNivel\032" +
-      "\023.estufa.EstadoFonte\022A\n\020AjustarIntervalo" +
-      "\022\030.estufa.ComandoIntervalo\032\023.estufa.Esta" +
-      "doFonte\0229\n\014SimularFalha\022\024.estufa.Comando" +
-      "Falha\032\023.estufa.EstadoFonteB\027\n\023br.ufc.est" +
-      "ufa.protoP\001b\006proto3"
+      "tado_inicial\030\007 \001(\0132\023.estufa.EstadoFonte\022" +
+      "\023\n\013em_resposta\030\010 \001(\010\"|\n\021MensagemMulticas" +
+      "t\0222\n\nrequisicao\030\001 \001(\0132\034.estufa.Requisica" +
+      "oDescobertaH\000\022\'\n\007anuncio\030\002 \001(\0132\024.estufa." +
+      "AnuncioFonteH\000B\n\n\010conteudo\"\324\001\n\007Leitura\022\020" +
+      "\n\010fonte_id\030\001 \001(\t\022\037\n\004tipo\030\002 \001(\0162\021.estufa." +
+      "TipoFonte\022\021\n\testufa_id\030\003 \001(\t\022\024\n\014timestam" +
+      "p_ms\030\004 \001(\003\022!\n\010medicoes\030\005 \003(\0132\017.estufa.Me" +
+      "dicao\022\016\n\006alerta\030\006 \001(\010\022\025\n\rmotivo_alerta\030\007" +
+      " \001(\t\022#\n\006estado\030\010 \001(\0132\023.estufa.EstadoFont" +
+      "e\"h\n\rMensagemFonte\022\'\n\007anuncio\030\001 \001(\0132\024.es" +
+      "tufa.AnuncioFonteH\000\022\"\n\007leitura\030\002 \001(\0132\017.e" +
+      "stufa.LeituraH\000B\n\n\010conteudo\"\035\n\014ComandoNi" +
+      "vel\022\r\n\005nivel\030\001 \001(\001\"$\n\020ComandoIntervalo\022\020" +
+      "\n\010segundos\030\001 \001(\001\"\036\n\014ComandoFalha\022\016\n\006ativ" +
+      "ar\030\001 \001(\010\"T\n\016ComandoCliente\022\020\n\010fonte_id\030\001" +
+      " \001(\t\022!\n\004tipo\030\002 \001(\0162\023.estufa.TipoComando\022" +
+      "\r\n\005valor\030\003 \001(\001\"k\n\020ConsultaAgregada\022\"\n\004ti" +
+      "po\030\001 \001(\0162\024.estufa.TipoConsulta\022\020\n\010janela" +
+      "_s\030\002 \001(\003\022\021\n\testufa_id\030\003 \001(\t\022\016\n\006limite\030\004 " +
+      "\001(\001\"n\n\021ResultadoAgregado\022\021\n\testufa_id\030\001 " +
+      "\001(\t\022\r\n\005valor\030\002 \001(\001\022\017\n\007unidade\030\003 \001(\t\022\024\n\014t" +
+      "imestamp_ms\030\004 \001(\003\022\020\n\010amostras\030\005 \001(\003\"}\n\021C" +
+      "onsultaHistorico\022\021\n\testufa_id\030\001 \001(\t\022\020\n\010g" +
+      "randeza\030\002 \001(\t\022\020\n\010fonte_id\030\003 \001(\t\022\r\n\005de_ms" +
+      "\030\004 \001(\003\022\016\n\006ate_ms\030\005 \001(\003\022\022\n\nmax_pontos\030\006 \001" +
+      "(\005\"S\n\nPontoSerie\022\024\n\014timestamp_ms\030\001 \001(\003\022\r" +
+      "\n\005valor\030\002 \001(\001\022\020\n\010fonte_id\030\003 \001(\t\022\016\n\006alert" +
+      "a\030\004 \001(\010\"\252\001\n\tInfoFonte\022\"\n\004info\030\001 \001(\0132\024.es" +
+      "tufa.AnuncioFonte\022#\n\006estado\030\002 \001(\0132\023.estu" +
+      "fa.EstadoFonte\022\016\n\006online\030\003 \001(\010\022\031\n\021ultimo" +
+      "_contato_ms\030\004 \001(\003\022)\n\020ultimas_medicoes\030\005 " +
+      "\003(\0132\017.estufa.Medicao\"\212\002\n\021RequisicaoClien" +
+      "te\022\022\n\nrequest_id\030\001 \001(\t\022&\n\rlistar_fontes\030" +
+      "\002 \001(\0132\r.estufa.VazioH\000\022)\n\007comando\030\003 \001(\0132" +
+      "\026.estufa.ComandoClienteH\000\022,\n\010consulta\030\004 " +
+      "\001(\0132\030.estufa.ConsultaAgregadaH\000\022.\n\thisto" +
+      "rico\030\005 \001(\0132\031.estufa.ConsultaHistoricoH\000\022" +
+      "\'\n\016listar_alertas\030\006 \001(\0132\r.estufa.VazioH\000" +
+      "B\007\n\005corpo\"\213\002\n\017RespostaGateway\022\022\n\nrequest" +
+      "_id\030\001 \001(\t\022\017\n\007sucesso\030\002 \001(\010\022\014\n\004erro\030\003 \001(\t" +
+      "\022!\n\006fontes\030\004 \003(\0132\021.estufa.InfoFonte\022.\n\021e" +
+      "stado_atualizado\030\005 \001(\0132\023.estufa.EstadoFo" +
+      "nte\022-\n\nresultados\030\006 \003(\0132\031.estufa.Resulta" +
+      "doAgregado\022!\n\005serie\030\007 \003(\0132\022.estufa.Ponto" +
+      "Serie\022 \n\007alertas\030\010 \003(\0132\017.estufa.Leitura*" +
+      "\232\001\n\tTipoFonte\022\025\n\021TIPO_DESCONHECIDO\020\000\022\014\n\010" +
+      "EXAUSTOR\020\001\022\017\n\013NEBULIZADOR\020\002\022\025\n\021TELA_SOMB" +
+      "REAMENTO\020\003\022\027\n\023SENSOR_TEMP_UMIDADE\020\004\022\027\n\023S" +
+      "ENSOR_LUMINOSIDADE\020\005\022\016\n\nSENSOR_CO2\020\006*\215\001\n" +
+      "\013TipoComando\022\024\n\020CMD_DESCONHECIDO\020\000\022\t\n\005LI" +
+      "GAR\020\001\022\014\n\010DESLIGAR\020\002\022\021\n\rAJUSTAR_NIVEL\020\003\022\025" +
+      "\n\021AJUSTAR_INTERVALO\020\004\022\021\n\rSIMULAR_FALHA\020\005" +
+      "\022\022\n\016ENCERRAR_FALHA\020\006*u\n\014TipoConsulta\022\031\n\025" +
+      "CONSULTA_DESCONHECIDA\020\000\022\025\n\021TEMPO_ACIMA_I" +
+      "DEAL\020\001\022\034\n\030MEDIA_UMIDADE_POR_ESTUFA\020\002\022\025\n\021" +
+      "PICO_LUMINOSIDADE\020\0032\331\002\n\016AtuadorService\0221" +
+      "\n\013ObterEstado\022\r.estufa.Vazio\032\023.estufa.Es" +
+      "tadoFonte\022+\n\005Ligar\022\r.estufa.Vazio\032\023.estu" +
+      "fa.EstadoFonte\022.\n\010Desligar\022\r.estufa.Vazi" +
+      "o\032\023.estufa.EstadoFonte\0229\n\014AjustarNivel\022\024" +
+      ".estufa.ComandoNivel\032\023.estufa.EstadoFont" +
+      "e\022A\n\020AjustarIntervalo\022\030.estufa.ComandoIn" +
+      "tervalo\032\023.estufa.EstadoFonte\0229\n\014SimularF" +
+      "alha\022\024.estufa.ComandoFalha\032\023.estufa.Esta" +
+      "doFonteB\027\n\023br.ufc.estufa.protoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -239,7 +239,7 @@ public final class Estufa {
     internal_static_estufa_AnuncioFonte_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_estufa_AnuncioFonte_descriptor,
-        new java.lang.String[] { "FonteId", "Tipo", "EstufaId", "Ip", "PortaGrpc", "Controlavel", "EstadoInicial", });
+        new java.lang.String[] { "FonteId", "Tipo", "EstufaId", "Ip", "PortaGrpc", "Controlavel", "EstadoInicial", "EmResposta", });
     internal_static_estufa_MensagemMulticast_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_estufa_MensagemMulticast_fieldAccessorTable = new

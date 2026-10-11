@@ -38,10 +38,10 @@ mensagem é Protobuf: pelo multicast, pelo UDP, pelo gRPC e pelo TCP.
 | 1b-iii. UDP das fontes para o Gateway | `fontes/base.py` envia; `gateway/receptor_udp.py` recebe |
 | 1b-iv. Multicast na descoberta | `gateway/descoberta.py` e `fontes/base.py` |
 | 2a. Cada fonte é um processo | um arquivo por tipo em `fontes/`, um processo por fonte |
-| 2b. Anúncio com tipo, IP, porta gRPC e estado | mensagem `AnuncioFonte` |
+| 2b. Descoberta de IPs e portas por multicast | o Gateway informa seu IP e porta UDP na `RequisicaoDescoberta`; as fontes informam tipo, IP, porta gRPC e estado inicial no `AnuncioFonte`, ambos pelo grupo `239.10.10.10:5007` |
 | 2c / 5b. Controláveis e não controláveis | exaustor, nebulizador e tela (gRPC); sensores de temperatura/umidade, luz e CO2 (só UDP) |
 | 3. Cliente lista, comanda e consulta | backend Java + Angular; também a CLI Python |
-| 4a/4b. Gateway pergunta ao iniciar, fontes respondem | `RequisicaoDescoberta` no grupo, `AnuncioFonte` de volta por UDP |
+| 4a/4b. Gateway pergunta ao iniciar, fontes respondem | `RequisicaoDescoberta` no grupo; cada fonte responde com `AnuncioFonte` no mesmo grupo multicast (e também direto ao Gateway por UDP, por robustez) |
 | 5c. Envio imediato por evento | `fontes/sensor_temp_umidade.py`: acima de 35 °C envia na hora |
 | 5d. 3 consultas agregadas | `gateway/consultas.py`: tempo acima da temperatura ideal, média de umidade por estufa, pico de luminosidade |
 | Extra: mais de uma linguagem | Python, Java e TypeScript |

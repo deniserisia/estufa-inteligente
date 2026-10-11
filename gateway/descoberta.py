@@ -1,7 +1,8 @@
 """Descoberta de fontes por multicast UDP.
 
 - Ao iniciar, o Gateway envia ao grupo uma RequisicaoDescoberta com seu IP e porta UDP.
-- As fontes respondem por UDP direto ao Gateway (tratado em receptor_udp.py).
+- As fontes respondem com AnuncioFonte no grupo multicast (e também direto ao
+  Gateway por UDP, por robustez; ver receptor_udp.py).
 - Uma fonte que sobe depois anuncia-se no grupo; o Gateway ouve, registra e
   reenvia a requisição, para a fonte aprender o endereço dele.
 """
@@ -75,5 +76,8 @@ class Descoberta:
                 continue
             if msg.WhichOneof("conteudo") == "anuncio":
                 self._ao_anunciar(msg.anuncio, "multicast")
-                self.solicitar(f"fonte nova no grupo: {msg.anuncio.fonte_id}")
+                if not msg.anuncio.em_resposta:
+                    # anúncio espontâneo: fonte que subiu depois do Gateway e ainda não
+                    # sabe o endereço dele; a requisição ensina o endereço
+                    self.solicitar(f"fonte nova no grupo: {msg.anuncio.fonte_id}")
             # requisições (inclusive a nossa, que volta pelo loopback) são ignoradas

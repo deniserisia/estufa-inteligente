@@ -250,6 +250,21 @@ private static final long serialVersionUID = 0L;
     return estadoInicial_ == null ? br.ufc.estufa.proto.EstadoFonte.getDefaultInstance() : estadoInicial_;
   }
 
+  public static final int EM_RESPOSTA_FIELD_NUMBER = 8;
+  private boolean emResposta_ = false;
+  /**
+   * <pre>
+   * true = resposta a uma RequisicaoDescoberta; false = anuncio espontaneo
+   * </pre>
+   *
+   * <code>bool em_resposta = 8;</code>
+   * @return The emResposta.
+   */
+  @java.lang.Override
+  public boolean getEmResposta() {
+    return emResposta_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -285,6 +300,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(7, getEstadoInicial());
     }
+    if (emResposta_ != false) {
+      output.writeBool(8, emResposta_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -319,6 +337,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(7, getEstadoInicial());
     }
+    if (emResposta_ != false) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(8, emResposta_);
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -350,6 +372,8 @@ private static final long serialVersionUID = 0L;
       if (!getEstadoInicial()
           .equals(other.getEstadoInicial())) return false;
     }
+    if (getEmResposta()
+        != other.getEmResposta()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -378,6 +402,9 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + ESTADO_INICIAL_FIELD_NUMBER;
       hash = (53 * hash) + getEstadoInicial().hashCode();
     }
+    hash = (37 * hash) + EM_RESPOSTA_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+        getEmResposta());
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -526,6 +553,7 @@ private static final long serialVersionUID = 0L;
         estadoInicialBuilder_.dispose();
         estadoInicialBuilder_ = null;
       }
+      emResposta_ = false;
       return this;
     }
 
@@ -584,6 +612,9 @@ private static final long serialVersionUID = 0L;
             : estadoInicialBuilder_.build();
         to_bitField0_ |= 0x00000001;
       }
+      if (((from_bitField0_ & 0x00000080) != 0)) {
+        result.emResposta_ = emResposta_;
+      }
       result.bitField0_ |= to_bitField0_;
     }
 
@@ -625,6 +656,9 @@ private static final long serialVersionUID = 0L;
       }
       if (other.hasEstadoInicial()) {
         mergeEstadoInicial(other.getEstadoInicial());
+      }
+      if (other.getEmResposta() != false) {
+        setEmResposta(other.getEmResposta());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -689,6 +723,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000040;
               break;
             } // case 58
+            case 64: {
+              emResposta_ = input.readBool();
+              bitField0_ |= 0x00000080;
+              break;
+            } // case 64
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1210,6 +1249,50 @@ private static final long serialVersionUID = 0L;
         estadoInicial_ = null;
       }
       return estadoInicialBuilder_;
+    }
+
+    private boolean emResposta_ ;
+    /**
+     * <pre>
+     * true = resposta a uma RequisicaoDescoberta; false = anuncio espontaneo
+     * </pre>
+     *
+     * <code>bool em_resposta = 8;</code>
+     * @return The emResposta.
+     */
+    @java.lang.Override
+    public boolean getEmResposta() {
+      return emResposta_;
+    }
+    /**
+     * <pre>
+     * true = resposta a uma RequisicaoDescoberta; false = anuncio espontaneo
+     * </pre>
+     *
+     * <code>bool em_resposta = 8;</code>
+     * @param value The emResposta to set.
+     * @return This builder for chaining.
+     */
+    public Builder setEmResposta(boolean value) {
+
+      emResposta_ = value;
+      bitField0_ |= 0x00000080;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * true = resposta a uma RequisicaoDescoberta; false = anuncio espontaneo
+     * </pre>
+     *
+     * <code>bool em_resposta = 8;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearEmResposta() {
+      bitField0_ = (bitField0_ & ~0x00000080);
+      emResposta_ = false;
+      onChanged();
+      return this;
     }
 
     // @@protoc_insertion_point(builder_scope:estufa.AnuncioFonte)
