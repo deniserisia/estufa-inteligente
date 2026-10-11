@@ -2,11 +2,12 @@ import { Component, computed, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Api, Fonte, TipoComando, mensagemDeErro } from '../api';
 import { Dados } from '../dados';
+import { Icone, NomeIcone } from '../icone';
 import { NOMES_TIPO, fmt, haQuanto, hora, nomeEstufa, resumoFonte } from '../formatos';
 
 @Component({
   selector: 'app-fontes',
-  imports: [FormsModule],
+  imports: [FormsModule, Icone],
   template: `
     <div class="pagina">
       <div class="topo">
@@ -25,18 +26,24 @@ import { NOMES_TIPO, fmt, haQuanto, hora, nomeEstufa, resumoFonte } from '../for
             <div class="vazio">Nenhuma fonte descoberta ainda.</div>
           } @else {
             <div class="rolagem">
-              <table style="min-width: 720px">
+              <table style="min-width: 680px">
                 <thead>
-                  <tr><th>Fonte</th><th>Estufa</th><th>Endereço</th><th>Status</th><th>Estado ou leitura</th><th>Ação</th></tr>
+                  <tr><th>Fonte</th><th>Endereço</th><th>Status</th><th>Estado ou leitura</th><th>Ação</th></tr>
                 </thead>
                 <tbody>
                   @for (f of dados.fontes(); track f.id) {
                     <tr [class.ativa]="f.id === selId()">
-                      <td class="nowrap">
-                        <div class="mono" style="font-weight: 500">{{ f.id }}</div>
-                        <div class="pequeno">{{ nomeTipo(f.tipo) }}</div>
+                      <td>
+                        <div class="fonte-cel">
+                          <span class="tipo-icone" [class.atuador]="f.controlavel">
+                            <app-icone [nome]="iconeTipo(f.tipo)" [tamanho]="18" />
+                          </span>
+                          <div>
+                            <div class="mono nowrap" style="font-weight: 500">{{ f.id }}</div>
+                            <div class="pequeno">{{ nomeTipo(f.tipo) }} · {{ nomeEstufa(f.estufa) }}</div>
+                          </div>
+                        </div>
                       </td>
-                      <td class="nowrap">{{ nomeEstufa(f.estufa) }}</td>
                       <td class="mono nowrap" style="font-size: 13px">{{ f.controlavel ? f.ip + ':' + f.portaGrpc : f.ip }}</td>
                       <td>
                         @if (f.online && !f.estado.emFalha) {
@@ -48,7 +55,7 @@ import { NOMES_TIPO, fmt, haQuanto, hora, nomeEstufa, resumoFonte } from '../for
                         }
                         <div class="pequeno" style="margin-top: 4px">{{ haQuanto(f.ultimoContatoMs) }}</div>
                       </td>
-                      <td [class.texto-alerta]="!f.online || f.estado.emFalha">{{ resumo(f) }}</td>
+                      <td class="estado-cel" [class.texto-alerta]="!f.online || f.estado.emFalha">{{ resumo(f) }}</td>
                       <td>
                         @if (f.controlavel) {
                           <button type="button" class="pequeno-btn" (click)="selecionar(f.id)">Controlar</button>
@@ -68,7 +75,10 @@ import { NOMES_TIPO, fmt, haQuanto, hora, nomeEstufa, resumoFonte } from '../for
           <section class="cartao" style="flex: 1 1 320px" aria-labelledby="titulo-controle">
             <div>
               <div class="pequeno" style="text-transform: uppercase; letter-spacing: 0.06em">Controle gRPC</div>
-              <h2 id="titulo-controle" class="mono" style="font-size: 20px; font-weight: 500; margin-top: 4px">{{ f.id }}</h2>
+              <div class="fonte-cel" style="margin-top: 8px">
+                <span class="tipo-icone atuador grande"><app-icone [nome]="iconeTipo(f.tipo)" [tamanho]="22" /></span>
+                <h2 id="titulo-controle" class="mono" style="font-size: 20px; font-weight: 500">{{ f.id }}</h2>
+              </div>
               <div class="pequeno">{{ nomeTipo(f.tipo) }} · {{ nomeEstufa(f.estufa) }} · {{ f.ip }}:{{ f.portaGrpc }}</div>
             </div>
 
@@ -129,6 +139,14 @@ import { NOMES_TIPO, fmt, haQuanto, hora, nomeEstufa, resumoFonte } from '../for
   `,
   styles: `
     .nowrap { white-space: nowrap; }
+    .estado-cel { min-width: 170px; }
+    .fonte-cel { display: flex; align-items: center; gap: 10px; }
+    .tipo-icone {
+      width: 34px; height: 34px; border-radius: 10px; flex: none; display: inline-flex; align-items: center;
+      justify-content: center; background: #eef2ef; color: var(--texto-3);
+    }
+    .tipo-icone.atuador { background: var(--verde-claro); color: var(--verde); }
+    .tipo-icone.grande { width: 42px; height: 42px; border-radius: 12px; }
     .duas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
   `,
 })
@@ -165,6 +183,14 @@ export class Fontes {
         this.intervalo.set(Math.round(f.estado.intervaloEnvioS));
       }
     });
+  }
+
+  protected iconeTipo(t: string): NomeIcone {
+    const mapa: Record<string, NomeIcone> = {
+      EXAUSTOR: 'ventilador', NEBULIZADOR: 'nevoa', TELA_SOMBREAMENTO: 'sombra',
+      SENSOR_TEMP_UMIDADE: 'termometro', SENSOR_LUMINOSIDADE: 'sol', SENSOR_CO2: 'co2',
+    };
+    return mapa[t] ?? 'folha';
   }
 
   protected nomeTipo(t: string): string {

@@ -1,6 +1,10 @@
 /* Estilos globais da Estufa Inteligente (mesmo visual do protótipo) */
 :root {
-  --fundo: #f4f6f3;
+  --fundo: #f3f5ee;
+  --creme: #f7f3e6;
+  --terra: #9a6b3c;
+  --trigo: #e2b84f;
+  --titulo: 'Fraunces', Georgia, serif;
   --cartao: #ffffff;
   --borda: #dce3de;
   --borda-forte: #bfcac3;
@@ -29,13 +33,18 @@ html, body { margin: 0; }
 body {
   font-family: 'IBM Plex Sans', system-ui, sans-serif;
   color: var(--texto);
-  background: var(--fundo);
   font-size: 14px;
+  /* folhagem discreta em padrão repetido sobre um verde-creme */
+  background-color: var(--fundo);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'%3E%3Cg fill='none' stroke='%231f6b4a' stroke-opacity='0.075' stroke-width='1.4' stroke-linecap='round'%3E%3Cpath d='M24 74c10-28 38-40 66-34-6 28-34 44-66 34z'/%3E%3Cpath d='M24 74l50-25'/%3E%3Cpath d='M42 66l6-14M58 58l3-13'/%3E%3Cpath d='M128 196c4-24 26-36 50-32-4 24-26 38-50 32z'/%3E%3Cpath d='M128 196l42-22'/%3E%3Cpath d='M150 120c0-14 8-22 22-24 0 14-8 22-22 24z'/%3E%3Cpath d='M150 120c-2-10-8-15-18-16 1 10 7 15 18 16z'/%3E%3Cpath d='M150 120v14'/%3E%3Cpath d='M182 30c8 4 12 12 10 22-9-3-13-11-10-22z'/%3E%3Cpath d='M40 160c6-6 14-7 22-3-6 6-14 7-22 3z'/%3E%3C/g%3E%3C/svg%3E"),
+    radial-gradient(1200px 600px at 100% 0%, #e6efdc 0%, transparent 60%);
+  background-attachment: fixed;
 }
 a { color: var(--verde); }
 a:hover { color: var(--verde-escuro); }
-h1 { margin: 0; font-size: 28px; line-height: 36px; font-weight: 600; }
+h1 { margin: 0; font-family: var(--titulo); font-size: 32px; line-height: 40px; font-weight: 600; letter-spacing: -0.01em; }
 h2 { margin: 0; font-size: 17px; font-weight: 600; }
+.titulo-serif { font-family: var(--titulo); letter-spacing: -0.01em; }
 .mono { font-family: var(--mono); }
 .sub { margin: 4px 0 0; font-size: 14px; color: var(--texto-2); }
 .pequeno { font-size: 12px; color: var(--texto-2); }
@@ -46,7 +55,9 @@ h2 { margin: 0; font-size: 17px; font-weight: 600; }
 
 /* cartões */
 .cartao {
-  background: var(--cartao); border: 1px solid var(--borda); border-radius: 12px; padding: 24px;
+  background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(6px);
+  border: 1px solid var(--borda); border-radius: 16px; padding: 24px;
+  box-shadow: 0 1px 2px rgba(21, 36, 27, 0.04), 0 8px 24px -16px rgba(21, 36, 27, 0.18);
   display: flex; flex-direction: column; gap: 16px; min-width: 0;
 }
 .cartao.alerta { border: 2px solid var(--laranja); }
@@ -65,7 +76,7 @@ h2 { margin: 0; font-size: 17px; font-weight: 600; }
 
 /* faixa de alerta */
 .faixa-alerta {
-  display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 16px 20px; border-radius: 12px;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 16px 20px; border-radius: 16px;
   background: var(--laranja-claro); border: 1px solid var(--laranja-borda); color: #6e2a07;
 }
 .faixa-alerta strong { font-size: 15px; }

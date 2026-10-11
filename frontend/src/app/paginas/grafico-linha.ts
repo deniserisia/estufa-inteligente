@@ -103,7 +103,7 @@ export class GraficoLinha {
     const ticks = [];
     const casas = passo >= 1 ? 0 : passo >= 0.1 ? 1 : 2;
     for (let v = min; v <= max + passo / 2; v += passo) {
-      const rotulo = Math.abs(v) >= 10000 ? `${fmt(v / 1000, 0)}k` : fmt(v, casas);
+      const rotulo = Math.abs(v) >= 10000 && passo >= 1000 ? `${fmt(v / 1000, 0)}k` : fmt(v, casas);
       ticks.push({ y: this.y(v), rotulo, base: Math.abs(v - min) < 1e-9 });
     }
     return ticks;

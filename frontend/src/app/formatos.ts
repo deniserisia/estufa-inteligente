@@ -95,3 +95,13 @@ export function baixarArquivo(nome: string, conteudo: string, tipo = 'text/csv;c
   a.click();
   URL.revokeObjectURL(url);
 }
+
+/** Cultivo de cada estufa (só para exibição; troque à vontade). */
+export const CULTURAS: Record<string, { nome: string; icone: 'tomate' | 'pimenta' | 'folha'; cor: string; fundo: string }> = {
+  'estufa-1': { nome: 'Tomate', icone: 'tomate', cor: '#C2410C', fundo: '#FDEBDD' },
+  'estufa-2': { nome: 'Pimentão', icone: 'pimenta', cor: '#3F7D3A', fundo: '#E5F1DF' },
+};
+
+export function cultura(estufa: string) {
+  return CULTURAS[estufa] ?? { nome: 'Cultivo', icone: 'folha' as const, cor: '#1F6B4A', fundo: '#E3EEE7' };
+}
