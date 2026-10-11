@@ -56,7 +56,7 @@ interface VisaoEstufa {
 
       @if (dados.carregou() && !visoes().length) {
         <div class="cartao vazio">
-          Nenhuma fonte descoberta ainda. Suba as fontes com <span class="mono">python scripts/iniciar_fontes.py</span>.
+          Nenhuma fonte descoberta ainda. Suba as fontes com <span class="mono">py scripts/iniciar_fontes.py</span>.
         </div>
       }
 

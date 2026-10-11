@@ -32,7 +32,7 @@ mensagem é Protobuf: pelo multicast, pelo UDP, pelo gRPC e pelo TCP.
 
 | Requisito | Onde |
 | --- | --- |
-| 1a. Protobuf em todas as mensagens | `proto/estufa.proto`; Python gera em `gen/`, Java gera pelo Maven |
+| 1a. Protobuf em todas as mensagens | `proto/estufa.proto`; Python gera em `gen/`; classes Java em `backend/src/main/java/br/ufc/estufa/proto` |
 | 1b-i. TCP entre Cliente e Gateway | `gateway/servidor_tcp.py` e `backend/.../GatewayTcpClient.java` (4 bytes de tamanho + mensagem) |
 | 1b-ii. gRPC para comandos, com `.proto` | serviço `AtuadorService`; servidor em `fontes/base_atuador.py`, cliente em `gateway/controle_grpc.py` |
 | 1b-iii. UDP das fontes para o Gateway | `fontes/base.py` envia; `gateway/receptor_udp.py` recebe |
@@ -52,34 +52,57 @@ mensagem é Protobuf: pelo multicast, pelo UDP, pelo gRPC e pelo TCP.
 
 | Ferramenta | Versão | Para quê |
 | --- | --- | --- |
-| Python | 3.10 ou mais novo | Gateway, fontes e CLI |
+| Python (do python.org) | 3.10 ou mais novo | Gateway, fontes e CLI |
 | Java (JDK) | 17 ou mais novo | Backend |
-| Maven | 3.9 ou mais novo (ou abrir `backend/pom.xml` no IntelliJ, que já traz o Maven) | Backend |
+| IntelliJ IDEA ou Maven 3.9+ | qualquer recente | Backend |
 | Node.js | 20.19+ ou 22.12+ (LTS) | Frontend |
 
-Não é preciso instalar o `protoc`: o Python usa o que vem no `grpcio-tools` e o
-Maven baixa o dele sozinho.
+Não é preciso instalar o `protoc`. O Python usa o que vem no `grpcio-tools`
+e gera o código sozinho na primeira execução (pasta `gen/`). As classes Java
+já vêm prontas em `backend/src/main/java/br/ufc/estufa/proto`.
 
-Na primeira vez, na raiz do projeto:
+### Windows: use `py`, não `python`
 
-```bash
-pip install -r requirements.txt
-cd frontend && npm install && cd ..
+Se o computador tem o MSYS2/MinGW instalado, o comando `python` pode abrir o
+Python do MSYS2 (`C:\msys64\...`), e o `pip` instalar no Python do
+python.org. Aí o gRPC fica instalado em um e o programa roda no outro. Use o
+lançador `py`, que sempre chama o Python do python.org:
+
+```powershell
+py --version                          # deve mostrar 3.10 ou mais novo
+py -m pip install -r requirements.txt
 ```
 
-O código Python do `.proto` é gerado sozinho na primeira execução (pasta
-`gen/`). Para gerar na mão: `python scripts/gerar_proto.py`.
+E em todos os comandos abaixo troque `python` por `py`.
 
-## Como rodar (4 terminais, na raiz do projeto)
+## Primeira vez
 
-```bash
+Abra a pasta **`estufa-inteligente`** inteira no VS Code (File > Open
+Folder), não a pasta `gateway` ou `scripts` sozinha. Os terminais devem
+começar na raiz, onde estão o `README.md` e o `requirements.txt`.
+
+```powershell
+py -m pip install -r requirements.txt
+cd frontend
+npm install
+cd ..
+```
+
+No IntelliJ, abra a pasta `backend` (ou o `backend/pom.xml`) como projeto
+Maven e espere ele baixar as dependências. Se aparecer erro, use a aba Maven >
+botão "Reload All Maven Projects".
+
+## Como rodar (4 terminais, todos começando na raiz `estufa-inteligente`)
+
+```powershell
 # 1. Gateway
-python gateway/main.py
+py gateway/main.py
 
 # 2. Fontes: as 6 fontes da estufa-1 e da estufa-2 (12 processos)
-python scripts/iniciar_fontes.py --quente 2
+py scripts/iniciar_fontes.py --quente 2
 
-# 3. Backend Java (a primeira vez demora: o Maven baixa as dependências)
+# 3. Backend Java: no IntelliJ, rode EstufaBackendApplication (botão play verde)
+#    ou, com Maven instalado:
 cd backend
 mvn spring-boot:run
 
@@ -94,7 +117,19 @@ importa: a descoberta resolve nos dois sentidos.
 `--quente 2` deixa a estufa-2 com clima 8 °C mais quente, para o alerta de
 35 °C aparecer na demonstração. Sem a opção, o clima segue a hora real do dia.
 
-Se no Linux/macOS o comando for `python3`, troque `python` por `python3`.
+No Linux/macOS, use `python3` no lugar de `py`.
+
+Os comandos também funcionam de dentro da subpasta (ex.: `cd gateway` e
+depois `py main.py`), mas aí o caminho muda: não use `gateway/main.py`
+estando dentro de `gateway`.
+
+### Se mudar o `.proto`
+
+```powershell
+py scripts/gerar_proto.py                 # Python (também acontece sozinho)
+py -m pip install protoc-wheel-0==30.2    # só na primeira vez, para o Java
+py scripts/gerar_proto.py --java          # Java, depois recompile o backend
+```
 
 ### Rodar uma fonte sozinha (bom para o vídeo)
 
@@ -102,8 +137,8 @@ Cada fonte também pode ser iniciada em um terminal próprio. O lançador
 imprime os comandos exatos; por exemplo:
 
 ```bash
-python fontes/exaustor.py --id exaustor-e1 --estufa estufa-1 --porta-grpc 50051
-python fontes/sensor_temp_umidade.py --id temp-e2 --estufa estufa-2 --cenario quente
+py fontes/exaustor.py --id exaustor-e1 --estufa estufa-1 --porta-grpc 50051
+py fontes/sensor_temp_umidade.py --id temp-e2 --estufa estufa-2 --cenario quente
 ```
 
 Portas gRPC: estufa-1 usa 50051 (exaustor), 50052 (nebulizador) e 50053
@@ -112,16 +147,16 @@ Portas gRPC: estufa-1 usa 50051 (exaustor), 50052 (nebulizador) e 50053
 ### Cliente de linha de comando
 
 ```bash
-python cli/cliente.py                     # menu interativo
-python cli/cliente.py listar
-python cli/cliente.py comando exaustor-e1 AJUSTAR_NIVEL 100
-python cli/cliente.py comando nebulizador-e2 LIGAR
-python cli/cliente.py comando exaustor-e2 SIMULAR_FALHA
-python cli/cliente.py consulta tempo --limite 30
-python cli/cliente.py consulta umidade --janela 86400
-python cli/cliente.py consulta luz
-python cli/cliente.py historico estufa-2 temperatura --minutos 15
-python cli/cliente.py alertas
+py cli/cliente.py                     # menu interativo
+py cli/cliente.py listar
+py cli/cliente.py comando exaustor-e1 AJUSTAR_NIVEL 100
+py cli/cliente.py comando nebulizador-e2 LIGAR
+py cli/cliente.py comando exaustor-e2 SIMULAR_FALHA
+py cli/cliente.py consulta tempo --limite 30
+py cli/cliente.py consulta umidade --janela 86400
+py cli/cliente.py consulta luz
+py cli/cliente.py historico estufa-2 temperatura --minutos 15
+py cli/cliente.py alertas
 ```
 
 ## Endereços e portas
@@ -169,7 +204,7 @@ próxima leitura. `SIMULAR_FALHA` faz o atuador parar de enviar e de atuar
 
 1. Subir o Gateway e mostrar a requisição de descoberta no log.
 2. Subir as fontes e mostrar os anúncios chegando no Gateway.
-3. `python cli/cliente.py listar` para provar o Cliente TCP fora da web.
+3. `py cli/cliente.py listar` para provar o Cliente TCP fora da web.
 4. Na web, tela Fontes: exaustor da estufa-2 a 100% e nebulizador ligado; nos Gráficos, a temperatura cai.
 5. Desligar os dois de novo: a temperatura passa de 35 °C, o alerta aparece na hora no log do Gateway e no Painel.
 6. Tela Consultas: as 3 consultas e o histórico.
@@ -182,7 +217,7 @@ Deixe o sistema rodando um tempo antes de gravar, para as consultas terem dados.
 Todos na mesma rede local (o multicast não atravessa roteadores).
 
 - Gateway e backend no computador A; no B, por exemplo, só a estufa-2:
-  `python scripts/iniciar_fontes.py --estufas 2`
+  `py scripts/iniciar_fontes.py --estufas 2`
 - Backend em outra máquina que não a do Gateway: mude `gateway.host` em
   `backend/src/main/resources/application.properties`.
 
@@ -194,8 +229,11 @@ Todos na mesma rede local (o multicast não atravessa roteadores).
 | Multicast sai pela placa errada (Wi-Fi e cabo juntos) | Defina `ESTUFA_IFACE` com o IP da placa certa, nos terminais do Gateway e das fontes |
 | O IP anunciado está errado | Defina `ESTUFA_IP` com o IP certo antes de iniciar as fontes |
 | `Address already in use` | Já existe um Gateway ou uma fonte rodando com a mesma porta |
-| Frontend mostra "Backend Java fora do ar" | Suba o backend (`mvn spring-boot:run` em `backend/`) |
-| Frontend mostra "Gateway fora do ar" | Suba o Gateway (`python gateway/main.py`) |
+| Frontend mostra "Backend Java fora do ar" | Suba o backend (play no `EstufaBackendApplication` ou `mvn spring-boot:run`) |
+| `can't open file ...\\gateway\\gateway\\main.py` | O terminal está dentro de `gateway`. Volte para a raiz (`cd ..`) |
+| `No module named 'grpc'` ou `pip` instala e não adianta | Dois Pythons no PC. Use `py -m pip install -r requirements.txt` e `py ...` |
+| IntelliJ: `package br.ufc.estufa.proto does not exist` | Aba Maven > Reload All Maven Projects; depois Build > Rebuild Project |
+| Frontend mostra "Gateway fora do ar" | Suba o Gateway (`py gateway/main.py`) |
 | Erro de versão do Protobuf no Python | Apague a pasta `gen/` e rode de novo: o código é gerado com a sua versão |
 | WSL não recebe multicast | Rode Gateway e fontes direto no Windows |
 

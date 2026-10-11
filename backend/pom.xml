@@ -19,8 +19,13 @@
 
     <properties>
         <java.version>17</java.version>
-        <!-- a mesma versão para o runtime e para o compilador protoc -->
-        <protobuf.version>4.31.1</protobuf.version>
+        <!--
+          As classes Java do ../proto/estufa.proto já estão geradas em
+          src/main/java/br/ufc/estufa/proto (protoc 30.2). O runtime precisa ser
+          da mesma versão ou mais novo. Se mudar o .proto, gere de novo com:
+          python scripts/gerar_proto.py --java   (na raiz do projeto)
+        -->
+        <protobuf.version>4.30.2</protobuf.version>
     </properties>
 
     <dependencies>
@@ -36,35 +41,10 @@
     </dependencies>
 
     <build>
-        <extensions>
-            <!-- descobre o sistema operacional para baixar o protoc certo -->
-            <extension>
-                <groupId>kr.motd.maven</groupId>
-                <artifactId>os-maven-plugin</artifactId>
-                <version>1.7.1</version>
-            </extension>
-        </extensions>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <!-- gera as classes Java a partir de ../proto/estufa.proto a cada build -->
-            <plugin>
-                <groupId>org.xolstice.maven.plugins</groupId>
-                <artifactId>protobuf-maven-plugin</artifactId>
-                <version>0.6.1</version>
-                <configuration>
-                    <protocArtifact>com.google.protobuf:protoc:${protobuf.version}:exe:${os.detected.classifier}</protocArtifact>
-                    <protoSourceRoot>${project.basedir}/../proto</protoSourceRoot>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

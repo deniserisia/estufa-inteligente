@@ -9,6 +9,7 @@ Ctrl+C encerra todas. Para o vídeo, também dá para abrir cada fonte em um
 terminal separado; os comandos exatos aparecem impressos ao iniciar.
 """
 import argparse
+import os
 import pathlib
 import subprocess
 import sys
@@ -51,7 +52,7 @@ def main() -> None:
     processos = []
     for n in estufas:
         for cmd in comandos_da_estufa(n, n in quentes, args.aceleracao):
-            print("python " + " ".join(cmd), flush=True)
+            print(("py " if os.name == "nt" else "python3 ") + " ".join(cmd), flush=True)
             processos.append(subprocess.Popen([sys.executable, *cmd], cwd=RAIZ))
             time.sleep(0.15)
     print(f"\n{len(processos)} fontes iniciadas. Ctrl+C encerra todas.\n", flush=True)

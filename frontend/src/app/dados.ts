@@ -34,7 +34,7 @@ export class Dados {
       next: (s) => {
         this.status.set(s);
         if (!s.gatewayConectado) {
-          this.erro.set(`Gateway fora do ar (${s.gateway}). Inicie: python gateway/main.py`);
+          this.erro.set(`Gateway fora do ar (${s.gateway}). Inicie: py gateway/main.py`);
           this.carregou.set(true);
           return;
         }

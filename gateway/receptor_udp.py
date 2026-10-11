@@ -1,10 +1,9 @@
 """Recebe anúncios e leituras das fontes pela porta UDP do Gateway (6000)."""
-import socket
 
 from google.protobuf.message import DecodeError
 
 import estufa_pb2 as pb
-from comum import log
+from comum import log, rede
 
 
 class ReceptorUDP:
@@ -15,13 +14,16 @@ class ReceptorUDP:
         self._descoberta = descoberta
         self._ao_anunciar = ao_anunciar
         self._verboso = verboso
-        self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self._sock = rede.socket_udp()
         self._sock.bind(("0.0.0.0", porta))
 
     def executar(self) -> None:
         log("udp", f"recebendo dados das fontes na porta {self._porta}")
         while True:
-            dados, origem = self._sock.recvfrom(65535)
+            try:
+                dados, origem = self._sock.recvfrom(65535)
+            except ConnectionResetError:  # Windows: aviso de ICMP, pode ignorar
+                continue
             msg = pb.MensagemFonte()
             try:
                 msg.ParseFromString(dados)

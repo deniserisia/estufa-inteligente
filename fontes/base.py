@@ -47,7 +47,7 @@ class FonteBase:
         self.trava = threading.RLock()
         self._ultimo_envio = 0.0
         self._ultimo_anuncio = 0.0
-        self._udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self._udp = rede.socket_udp()
         self._mc_tx = rede.socket_multicast_emissor()
 
     # ------------------------------------------------------------ argumentos
@@ -105,7 +105,7 @@ class FonteBase:
             gw = self.gateway
         if gw is None:
             return
-        self._udp.sendto(pb.MensagemFonte(anuncio=self.anuncio()).SerializeToString(), gw)
+        rede.enviar_udp(self._udp, pb.MensagemFonte(anuncio=self.anuncio()).SerializeToString(), gw)
 
     def _escutar_multicast(self) -> None:
         rx = rede.socket_multicast_receptor(timeout=1.0)
@@ -142,7 +142,7 @@ class FonteBase:
                 timestamp_ms=rede.agora_ms(), medicoes=self.medicoes(),
                 alerta=alerta, motivo_alerta=motivo, estado=self.estado(),
             )
-        self._udp.sendto(pb.MensagemFonte(leitura=leitura).SerializeToString(), gw)
+        rede.enviar_udp(self._udp, pb.MensagemFonte(leitura=leitura).SerializeToString(), gw)
         self._ultimo_envio = time.monotonic()
         if alerta:
             log(self.id, f"ALERTA enviado na hora: {motivo}")

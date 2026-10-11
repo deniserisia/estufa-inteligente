@@ -43,6 +43,28 @@ def ip_local() -> str:
         s.close()
 
 
+def socket_udp() -> socket.socket:
+    """Socket UDP comum, preparado para o Windows.
+
+    No Windows, depois que um datagrama volta com "porta inalcançável" (ex.: o
+    Gateway reiniciou), o socket passa a lançar ConnectionResetError. O ioctl
+    abaixo desliga esse comportamento.
+    """
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    if hasattr(socket, "SIO_UDP_CONNRESET"):
+        s.ioctl(socket.SIO_UDP_CONNRESET, False)
+    return s
+
+
+def enviar_udp(sock: socket.socket, dados: bytes, destino: tuple[str, int]) -> bool:
+    """Envia um datagrama; devolve False em vez de derrubar o processo se a rede falhar."""
+    try:
+        sock.sendto(dados, destino)
+        return True
+    except OSError:
+        return False
+
+
 # ---------------------------------------------------------------- multicast
 
 def socket_multicast_receptor(timeout: float | None = 1.0) -> socket.socket:

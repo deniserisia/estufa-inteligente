@@ -1,41 +1,53 @@
-"""Gera o código Python a partir de proto/estufa.proto.
+"""Gera o código a partir de proto/estufa.proto.
 
-Uso (na raiz do projeto):  python scripts/gerar_proto.py
+Uso (de qualquer pasta):
+    python scripts/gerar_proto.py           # Python, em gen/ (feito sozinho na 1ª execução)
+    python scripts/gerar_proto.py --java    # Java, em backend/src/main/java (só se mudar o .proto)
 
-O código Java é gerado pelo Maven automaticamente (backend/pom.xml).
+O --java precisa do protoc 30.2:  pip install protoc-wheel-0==30.2
+(as classes Java já vêm prontas no projeto; só é preciso gerar de novo se o .proto mudar)
 """
+import os
 import pathlib
+import shutil
+import subprocess
 import sys
 
-from grpc_tools import protoc
-
 RAIZ = pathlib.Path(__file__).resolve().parents[1]
-PROTO_DIR = RAIZ / "proto"
-GEN_DIR = RAIZ / "gen"
 
 
-def main() -> int:
-    GEN_DIR.mkdir(exist_ok=True)
-    (GEN_DIR / "__init__.py").touch()
-    # include das definições padrão do protobuf que vêm com o grpc_tools
-    import grpc_tools
-    include_padrao = pathlib.Path(grpc_tools.__file__).parent / "_proto"
-    args = [
-        "grpc_tools.protoc",
-        f"-I{PROTO_DIR}",
-        f"-I{include_padrao}",
-        f"--python_out={GEN_DIR}",
-        f"--pyi_out={GEN_DIR}",
-        f"--grpc_python_out={GEN_DIR}",
-        str(PROTO_DIR / "estufa.proto"),
-    ]
-    codigo = protoc.main(args)
-    if codigo == 0:
-        print(f"Código gerado em {GEN_DIR}")
-    else:
-        print("Falha ao gerar o código. Confira o arquivo .proto.")
+def gerar_python() -> int:
+    from grpc_tools import protoc
+
+    (RAIZ / "gen").mkdir(exist_ok=True)
+    (RAIZ / "gen" / "__init__.py").touch()
+    # caminhos relativos à raiz: evita problemas com acentos e espaços
+    # (ex.: "Área de Trabalho") no caminho completo, no Windows
+    anterior = os.getcwd()
+    os.chdir(RAIZ)
+    try:
+        codigo = protoc.main([
+            "grpc_tools.protoc", "-Iproto",
+            "--python_out=gen", "--pyi_out=gen", "--grpc_python_out=gen",
+            "proto/estufa.proto",
+        ])
+    finally:
+        os.chdir(anterior)
+    print("Código Python gerado em gen/" if codigo == 0 else "Falha ao gerar o código Python.")
+    return codigo
+
+
+def gerar_java() -> int:
+    protoc = shutil.which("protoc")
+    if protoc is None:
+        print("protoc não encontrado. Instale com:  pip install protoc-wheel-0==30.2")
+        return 1
+    destino = "backend/src/main/java"
+    shutil.rmtree(RAIZ / destino / "br" / "ufc" / "estufa" / "proto", ignore_errors=True)
+    codigo = subprocess.run([protoc, "-Iproto", f"--java_out={destino}", "proto/estufa.proto"], cwd=RAIZ).returncode
+    print(f"Código Java gerado em {destino}/br/ufc/estufa/proto" if codigo == 0 else "Falha ao gerar o código Java.")
     return codigo
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(gerar_java() if "--java" in sys.argv else gerar_python())
