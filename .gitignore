@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+gen/
+ambiente/
+gateway/*.db
+gateway/*.db-*
+
+# Java
+backend/target/
+
+# Angular
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+
+# IDEs
+.idea/
+.vscode/*
+!.vscode/extensions.json

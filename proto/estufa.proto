@@ -1,0 +1,182 @@
+// Contrato único do sistema Estufa Inteligente.
+// Python (Gateway, fontes, CLI) e Java (backend) geram código a partir deste arquivo.
+syntax = "proto3";
+
+package estufa;
+
+option java_package = "br.ufc.estufa.proto";
+option java_multiple_files = true;
+
+// ===================== Tipos comuns =====================
+
+enum TipoFonte {
+  TIPO_DESCONHECIDO = 0;
+  EXAUSTOR = 1;
+  NEBULIZADOR = 2;
+  TELA_SOMBREAMENTO = 3;
+  SENSOR_TEMP_UMIDADE = 4;
+  SENSOR_LUMINOSIDADE = 5;
+  SENSOR_CO2 = 6;
+}
+
+message Vazio {}
+
+// Estado operacional (anuncio, respostas gRPC e respostas ao cliente)
+message EstadoFonte {
+  bool ligado = 1;
+  double nivel = 2;              // exaustor: velocidade %; tela: abertura %
+  double intervalo_envio_s = 3;
+  bool em_falha = 4;
+}
+
+message Medicao {
+  string grandeza = 1;           // "temperatura", "umidade", "luminosidade", "co2", "velocidade", "abertura", "vazao", "consumo", "ligado"
+  double valor = 2;
+  string unidade = 3;            // "C", "%", "lux", "ppm", "L/h", "W"
+}
+
+// ============ Descoberta (multicast 239.10.10.10:5007) ============
+
+message RequisicaoDescoberta {
+  string gateway_ip = 1;
+  int32 gateway_porta_udp = 2;   // para onde as fontes respondem e enviam dados
+}
+
+message AnuncioFonte {
+  string fonte_id = 1;           // ex.: "exaustor-e1"
+  TipoFonte tipo = 2;
+  string estufa_id = 3;          // ex.: "estufa-1"
+  string ip = 4;
+  int32 porta_grpc = 5;          // 0 quando nao controlavel
+  bool controlavel = 6;
+  EstadoFonte estado_inicial = 7;
+}
+
+message MensagemMulticast {
+  oneof conteudo {
+    RequisicaoDescoberta requisicao = 1;  // Gateway -> fontes
+    AnuncioFonte anuncio = 2;             // fonte que subiu depois do Gateway
+  }
+}
+
+// ============ Dados (UDP para o Gateway, porta 6000) ============
+
+message Leitura {
+  string fonte_id = 1;
+  TipoFonte tipo = 2;
+  string estufa_id = 3;
+  int64 timestamp_ms = 4;
+  repeated Medicao medicoes = 5;
+  bool alerta = 6;               // true = envio imediato por evento
+  string motivo_alerta = 7;
+  EstadoFonte estado = 8;
+}
+
+message MensagemFonte {
+  oneof conteudo {
+    AnuncioFonte anuncio = 1;    // resposta a descoberta
+    Leitura leitura = 2;
+  }
+}
+
+// ============ Controle (gRPC, Gateway -> atuadores) ============
+
+message ComandoNivel { double nivel = 1; }        // 0 a 100
+message ComandoIntervalo { double segundos = 1; }
+message ComandoFalha { bool ativar = 1; }
+
+service AtuadorService {
+  rpc ObterEstado (Vazio) returns (EstadoFonte);
+  rpc Ligar (Vazio) returns (EstadoFonte);
+  rpc Desligar (Vazio) returns (EstadoFonte);
+  rpc AjustarNivel (ComandoNivel) returns (EstadoFonte);
+  rpc AjustarIntervalo (ComandoIntervalo) returns (EstadoFonte);
+  rpc SimularFalha (ComandoFalha) returns (EstadoFonte);
+}
+
+// ============ Cliente <-> Gateway (TCP, porta 7000) ============
+// Cada mensagem no TCP vai precedida de 4 bytes (big-endian) com o seu tamanho.
+
+enum TipoComando {
+  CMD_DESCONHECIDO = 0;
+  LIGAR = 1;
+  DESLIGAR = 2;
+  AJUSTAR_NIVEL = 3;
+  AJUSTAR_INTERVALO = 4;
+  SIMULAR_FALHA = 5;
+  ENCERRAR_FALHA = 6;
+}
+
+message ComandoCliente {
+  string fonte_id = 1;
+  TipoComando tipo = 2;
+  double valor = 3;              // usado em AJUSTAR_NIVEL e AJUSTAR_INTERVALO
+}
+
+enum TipoConsulta {
+  CONSULTA_DESCONHECIDA = 0;
+  TEMPO_ACIMA_IDEAL = 1;
+  MEDIA_UMIDADE_POR_ESTUFA = 2;
+  PICO_LUMINOSIDADE = 3;
+}
+
+message ConsultaAgregada {
+  TipoConsulta tipo = 1;
+  int64 janela_s = 2;            // 3600 = ultima hora; 86400 = ultimas 24 h
+  string estufa_id = 3;          // vazio = todas as estufas
+  double limite = 4;             // temperatura ideal maxima (ex.: 30) em TEMPO_ACIMA_IDEAL
+}
+
+message ResultadoAgregado {
+  string estufa_id = 1;
+  double valor = 2;
+  string unidade = 3;            // "s", "%", "lux"
+  int64 timestamp_ms = 4;        // instante do pico, quando fizer sentido
+  int64 amostras = 5;            // quantas leituras entraram no calculo
+}
+
+message ConsultaHistorico {
+  string estufa_id = 1;
+  string grandeza = 2;
+  string fonte_id = 3;           // opcional
+  int64 de_ms = 4;
+  int64 ate_ms = 5;
+  int32 max_pontos = 6;
+}
+
+message PontoSerie {
+  int64 timestamp_ms = 1;
+  double valor = 2;
+  string fonte_id = 3;
+  bool alerta = 4;
+}
+
+message InfoFonte {
+  AnuncioFonte info = 1;
+  EstadoFonte estado = 2;
+  bool online = 3;
+  int64 ultimo_contato_ms = 4;
+  repeated Medicao ultimas_medicoes = 5;
+}
+
+message RequisicaoCliente {
+  string request_id = 1;
+  oneof corpo {
+    Vazio listar_fontes = 2;
+    ComandoCliente comando = 3;
+    ConsultaAgregada consulta = 4;
+    ConsultaHistorico historico = 5;
+    Vazio listar_alertas = 6;
+  }
+}
+
+message RespostaGateway {
+  string request_id = 1;
+  bool sucesso = 2;
+  string erro = 3;
+  repeated InfoFonte fontes = 4;              // listar_fontes
+  EstadoFonte estado_atualizado = 5;          // comando
+  repeated ResultadoAgregado resultados = 6;  // consulta
+  repeated PontoSerie serie = 7;              // historico
+  repeated Leitura alertas = 8;               // listar_alertas
+}

@@ -1,0 +1,4 @@
+# Python 3.10 ou mais novo
+grpcio>=1.62
+grpcio-tools>=1.62
+# o protobuf vem como dependência do grpcio-tools, na versão compatível
